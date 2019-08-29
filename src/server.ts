@@ -16,7 +16,7 @@ server.route({
   method: "GET",
   path: "/hello",
   handler(request, h) {
-    return "hello world 2";
+    return "hello world";
   }
 });
 
