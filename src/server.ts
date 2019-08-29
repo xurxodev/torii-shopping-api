@@ -1,14 +1,9 @@
 import * as hapi from "hapi";
 
-let port: string = process.env.PORT;
-if (!undefined) {
-  port = "8000";
-}
-
 // create a server with a host and port
 const server: hapi.Server = new hapi.Server({
   host: "localhost",
-  port
+  port: process.env.PORT || 8000
 });
 
 // add the route
