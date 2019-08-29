@@ -22,5 +22,8 @@
     "nodemon": "^1.19.1",
     "tslint": "^5.19.0",
     "typescript": "^3.6.2"
+  },
+  "engines": {
+    "node": "10.x"
   }
 }
