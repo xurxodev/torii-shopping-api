@@ -28,6 +28,8 @@ $ yarn test
 
 ## License
 
+MIT License
+
 Copyright (c) 2019 Jorge Sánchez Fernández
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
