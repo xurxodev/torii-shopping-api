@@ -7,8 +7,10 @@
   "author": "Jorge Sánchez <xurxosf@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "./node_modules/nodemon/bin/nodemon.js -e ts  --exec \"yarn run compile\"",
-    "compile": "yarn clean && tsc && yarn lint && node ./build/server.js",
+    "start": "yarn build && node ./build/server.js",
+    "build": "yarn clean && tsc",
+    "start-dev": "./node_modules/nodemon/bin/nodemon.js -e ts  --exec \"yarn build-dev\"",
+    "build-dev": "yarn build && yarn lint && node ./build/server.js",
     "clean": "rm -rf build",
     "lint": "tslint -c tslint.json -p tsconfig.json --fix",
     "test": "echo \"Error: no test specified\" && exit 1"
