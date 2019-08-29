@@ -2,7 +2,7 @@ import * as hapi from "hapi";
 
 // create a server with a host and port
 const server: hapi.Server = new hapi.Server({
-  host: "localhost",
+  host: "0.0.0.0",
   port: process.env.PORT || 8000
 });
 
