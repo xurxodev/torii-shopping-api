@@ -1,2 +1,3 @@
 # ShoppingApi
-NodeJS shopping API 
+
+NodeJS shopping API to retrieve products and prices
