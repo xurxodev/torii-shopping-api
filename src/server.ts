@@ -1,4 +1,5 @@
 import * as hapi from "hapi";
+import productRoutes from "./products/presentation/ProductRoutes";
 
 // create a server with a host and port
 const server: hapi.Server = new hapi.Server({
@@ -6,13 +7,9 @@ const server: hapi.Server = new hapi.Server({
   port: process.env.PORT || 8000
 });
 
-// add the route
-server.route({
-  method: "GET",
-  path: "/hello",
-  handler(request, h) {
-    return "hello world";
-  }
+// initialize routes
+productRoutes.forEach((route) => {
+  server.route(route);
 });
 
 // start the server
