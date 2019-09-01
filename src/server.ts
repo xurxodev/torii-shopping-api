@@ -1,6 +1,8 @@
 import * as hapi from "hapi";
 import productRoutes from "./products/presentation/ProductRoutes";
 
+console.log(this);
+
 // create a server with a host and port
 const server: hapi.Server = new hapi.Server({
   host: "0.0.0.0",
@@ -8,7 +10,8 @@ const server: hapi.Server = new hapi.Server({
 });
 
 // initialize routes
-productRoutes.forEach((route) => {
+productRoutes().forEach((route: hapi.ServerRoute) => {
+  server.bind(route);
   server.route(route);
 });
 

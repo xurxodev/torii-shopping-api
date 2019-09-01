@@ -17,10 +17,12 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "@hapi/boom": "^7.4.3",
     "hapi": "^18.1.0"
   },
   "devDependencies": {
     "@types/hapi": "^18.0.2",
+    "@types/hapi__boom": "^7.4.1",
     "@types/node": "^12.7.2",
     "nodemon": "^1.19.1",
     "tslint": "^5.19.0",
