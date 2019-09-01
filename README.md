@@ -1,6 +1,8 @@
-# ShoppingApi
+![ToriiShopping- icon-header](https://user-images.githubusercontent.com/5593590/64075682-9c047800-ccbb-11e9-8b89-394a37f9e6a4.png)
 
-NodeJS shopping API to retrieve products and prices
+# ToriiShopping Api
+
+ToriiShopping API is a API Rest to retrieve products. Developed using typescript in Node.js and using hapijs framework.
 
 ## Setup
 
@@ -13,10 +15,21 @@ $ yarn install
 Start development server:
 
 ```
+$ yarn start-dev
+```
+
+This will open the development server at port 8000 or port asigned in process.env.PORT with automaticatic restart the server when a typescript file change.
+Use [nodemon](https://github.com/remy/nodemon) to automaticatic restart.
+
+## Production
+
+Start development server:
+
+```
 $ yarn start
 ```
 
-This will open the development server at port 8000
+This will open the development server at port 8000 or port asigned in process.env.PORT 
 
 ## Tests
 
@@ -26,6 +39,9 @@ Run unit tests:
 $ yarn test
 ```
 
+## Libraries used in this project
+[hapijs](https://github.com/hapijs/hapi)
+[hapi boom](https://github.com/hapijs/boom)
 ## License
 
 MIT License
