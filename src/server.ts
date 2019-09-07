@@ -1,4 +1,5 @@
 import * as hapi from "hapi";
+import bannerRoutes from "./banners/presentation/BannerRoutes";
 import productRoutes from "./products/presentation/ProductRoutes";
 
 console.log(this);
@@ -9,9 +10,13 @@ const server: hapi.Server = new hapi.Server({
   port: process.env.PORT || 8000
 });
 
-// initialize routes
+// initialize products routes
 productRoutes().forEach((route: hapi.ServerRoute) => {
-  server.bind(route);
+  server.route(route);
+});
+
+// initialize banners routes
+bannerRoutes().forEach((route: hapi.ServerRoute) => {
   server.route(route);
 });
 
