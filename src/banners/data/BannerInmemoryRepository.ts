@@ -31,7 +31,7 @@ export default class BannerInmemoryRepository implements BannerRepository {
             imageUrl: "https://images-eu.ssl-images-amazon.com/images/G/30/kindle/ku/associates/PD2019/XCM_Manual1177852_ES_KU_Ad_250x250_1561470311.png",
             linkUrl: "https://www.amazon.es/kindle-dbs/hz/signup?tag=toriishopping-21"
         }, {
-            imageUrl: "https://images-eu.ssl-images-amazon.com//images/G/30/digital/music/2019/Associates/020819/ES_020819_EU_MC_Associates_02_300x250._CB454202434_.png",
+            imageUrl: "https://images-eu.ssl-images-amazon.com//images/G/30/digital/music/2019/Associates/020819/ES_020819_EU_MC_Associates_02_250x250._CB454202434_.png",
             linkUrl: "https://www.amazon.es/gp/dmusic/promotions/AmazonMusicUnlimited?tag=toriishopping-21"
         }]
     };
