@@ -1,4 +1,4 @@
-![ToriiShopping- icon-header](https://user-images.githubusercontent.com/5593590/64075682-9c047800-ccbb-11e9-8b89-394a37f9e6a4.png)
+![torii-shopping-api-header](https://user-images.githubusercontent.com/5593590/64252020-20eccd00-cf1a-11e9-8964-adb0e976cc93.png)
 
 ToriiShopping API is a API Rest to retrieve products. Developed using typescript in Node.js and using hapijs framework.
 
