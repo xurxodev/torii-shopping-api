@@ -17,7 +17,13 @@ export default class ProductController {
     }
 
     public getProducts(request: hapi.Request, h: hapi.ResponseToolkit): hapi.Lifecycle.ReturnValue {
-        return this.getProductsUseCase.execute(undefined);
+        let query = "";
+
+        if (request.query.q) {
+            query = request.query.q.toString();
+        }
+
+        return this.getProductsUseCase.execute(query);
     }
 
     public getProductById(request: hapi.Request, h: hapi.ResponseToolkit): hapi.Lifecycle.ReturnValue {
