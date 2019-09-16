@@ -18,12 +18,16 @@
   },
   "dependencies": {
     "@hapi/boom": "^7.4.3",
-    "hapi": "^18.1.0"
+    "csv-parser": "^2.3.0",
+    "hapi": "^18.1.0",
+    "request": "^2.88.0",
+    "zlib": "^1.0.5"
   },
   "devDependencies": {
     "@types/hapi": "^18.0.2",
     "@types/hapi__boom": "^7.4.1",
     "@types/node": "^12.7.2",
+    "@types/request": "^2.48.3",
     "nodemon": "^1.19.1",
     "tslint": "^5.19.0",
     "typescript": "^3.6.2"
