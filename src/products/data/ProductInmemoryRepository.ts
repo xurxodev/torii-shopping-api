@@ -6,6 +6,7 @@ export default class ProductInmemoryRepository implements ProductRepository {
         {
             asin: "B07JBJSHLX",
             description: `Cámara inteligente – con Google Lens, Top Shot, grupo selfies y ilimitada de memoria Google Lens – el mundo cobren vida Batería inteligente – Carga rápido, mantiene durante mucho tiempo Google Assistant – en cualquier lugar para dich da Digital wellbeing – una vez no ser alcanzables`,
+            ean: "",
             images: [
                 "https://images-na.ssl-images-amazon.com/images/I/51czxBa-YoL._SL1144_.jpg",
                 "https://images-na.ssl-images-amazon.com/images/I/219k8LLJZpL.jpg"
@@ -16,6 +17,7 @@ export default class ProductInmemoryRepository implements ProductRepository {
         {
             asin: "B07HMGKC1T",
             description: `Resistencia al agua y al polvo IP67 (hasta 1 metro de profundidad durante un máximo de 30 minutos) Cámara de 12 Mpx con estabilización óptica de imagen y cámara frontal TrueDepth de 7 Mpx: modo Retrato, Iluminación de Retratos, Control de Profundidad y HDR Inteligente Face ID para autenticarse de forma segura y usar Apple Pay Chip A12 Bionic con Neural Engine de última generación Carga inalámbrica (funciona con cargadores Qi) iOS 12 con Memoji, Tiempo de Uso, Atajos de Siri y FaceTime de grupo`,
+            ean: "",
             images: [
                 "https://images-na.ssl-images-amazon.com/images/I/51PuFBgBK4L._SL1024_.jpg",
                 "https://images-na.ssl-images-amazon.com/images/I/41p9ZCOyH6L._SL1024_.jpg"

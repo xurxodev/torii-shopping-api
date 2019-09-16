@@ -24,9 +24,9 @@ export default class ProductAwinRepository implements ProductRepository {
             });
             */
 
-
         const fileUrl = "https://productdata.awin.com//datafeed/download/apikey/75210c69ad31f48c6d23bbaff75d78ec/language/es/fid/33799/columns/aw_deep_link,product_name,aw_product_id,merchant_product_id,merchant_image_url,description,merchant_category,search_price,merchant_name,merchant_id,category_name,category_id,aw_image_url,currency,store_price,delivery_cost,merchant_deep_link,language,last_updated,display_price,data_feed_id,ean,isbn,upc,mpn,parent_product_id,product_GTIN,merchant_thumb_url,large_image,alternate_image,aw_thumb_url,alternate_image_two,alternate_image_three,alternate_image_four/format/csv/delimiter/%7C/compression/gzip/adultcontent/1/";
 
+        /*
         const gunzip = zlib.createGunzip();
 
         request.get({ url: fileUrl, gzip: true})
@@ -71,7 +71,7 @@ export default class ProductAwinRepository implements ProductRepository {
                         return {
                             asin: "",
                             description: p.description,
-                            gtin: p.product_GTIN,
+                            ean: p.product_GTIN,
                             images: [p.merchant_image_url, p.large_image, p.alternate_image, p.alternate_image_two],
                             name: p.product_name,
                             upc: p.upc,
