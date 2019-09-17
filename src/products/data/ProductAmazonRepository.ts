@@ -42,9 +42,15 @@ export default class ProductAmazonRepository implements ProductRepository {
                 ResponseGroup: "ItemAttributes,Offers,Images",
                 SearchIndex: "All"
             }).then((response) => {
-                const products = response.result.ItemSearchResponse.Items.Item.map((p) => {
-                    return this.mapAmazonProduct(p);
-                });
+                let products = [];
+
+                if (Array.isArray(response.result.ItemSearchResponse.Items.Item)) {
+                    products = response.result.ItemSearchResponse.Items.Item.map((p) => {
+                        return this.mapAmazonProduct(p);
+                    });
+                } else {
+                    products.push(this.mapAmazonProduct(response.result.ItemSearchResponse.Items.Item));
+                }
 
                 resolve(products);
             }).catch((err) => {
