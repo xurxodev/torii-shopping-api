@@ -30,7 +30,7 @@ export default class ProductController {
         if (request.params.asin) {
             return this.getProductByAsinUseCase.execute(request.params.asin)
                 .catch(
-                    (reason) => boom.notFound(reason)
+                    (reason) => boom.notFound(reason.message)
                 );
         }
     }

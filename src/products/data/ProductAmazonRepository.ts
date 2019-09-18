@@ -22,9 +22,12 @@ export default class ProductAmazonRepository implements ProductRepository {
                 ItemId: asin,
                 ResponseGroup: "ItemAttributes,Offers,Images"
             }).then((response) => {
+                if (response.result.ItemLookupResponse.Items.Item) {
                 const product = this.mapAmazonProduct(response.result.ItemLookupResponse.Items.Item);
-
                 resolve(product);
+                } else {
+                    reject({ message: `Does not exists any product with asin ${asin}` });
+                }
             }).catch((err) => {
                 reject({ message: "An error has ocurred on processing the request" });
             });
@@ -44,12 +47,14 @@ export default class ProductAmazonRepository implements ProductRepository {
             }).then((response) => {
                 let products = [];
 
-                if (Array.isArray(response.result.ItemSearchResponse.Items.Item)) {
-                    products = response.result.ItemSearchResponse.Items.Item.map((p) => {
-                        return this.mapAmazonProduct(p);
-                    });
-                } else {
-                    products.push(this.mapAmazonProduct(response.result.ItemSearchResponse.Items.Item));
+                if (response.result.ItemSearchResponse.Items.Item) {
+                    if (Array.isArray(response.result.ItemSearchResponse.Items.Item)) {
+                        products = response.result.ItemSearchResponse.Items.Item.map((p) => {
+                            return this.mapAmazonProduct(p);
+                        });
+                    } else {
+                        products.push(this.mapAmazonProduct(response.result.ItemSearchResponse.Items.Item));
+                    }
                 }
 
                 resolve(products);
