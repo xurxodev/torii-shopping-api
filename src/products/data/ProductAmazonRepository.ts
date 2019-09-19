@@ -1,7 +1,8 @@
 
 import { OperationHelper } from "apac";
 import ProductRepository from "../domain/Boundaries";
-import Product from "../domain/Product";
+import Product from "../domain/entities/Product";
+import SearchResult from "../domain/entities/SearchResult";
 
 export default class ProductAmazonRepository implements ProductRepository {
     public opHelper: OperationHelper;
@@ -23,43 +24,52 @@ export default class ProductAmazonRepository implements ProductRepository {
                 ResponseGroup: "ItemAttributes,Offers,Images"
             }).then((response) => {
                 if (response.result.ItemLookupResponse.Items.Item) {
-                const product = this.mapAmazonProduct(response.result.ItemLookupResponse.Items.Item);
-                resolve(product);
+                    const product = this.mapAmazonProduct(response.result.ItemLookupResponse.Items.Item);
+                    resolve(product);
                 } else {
                     reject({ message: `Does not exists any product with asin ${asin}` });
                 }
             }).catch((err) => {
-                reject({ message: "An error has ocurred on processing the request" });
+                reject({ message: "An error has ocurred processing the request" });
             });
         });
     }
 
-    public get(filter: string): Promise<Product[]> {
+    public get(filter: string, page: number = 1): Promise<SearchResult<Product>> {
         if (filter.length === 0) {
             filter = " ";
         }
 
         return new Promise((resolve, reject) => {
             this.opHelper.execute("ItemSearch", {
+                ItemPage: page,
                 Keywords: filter,
                 ResponseGroup: "ItemAttributes,Offers,Images",
                 SearchIndex: "All"
             }).then((response) => {
-                let products = [];
+                const results = {
+                    items: [],
+                    page,
+                    totalPages: 1
+                };
 
                 if (response.result.ItemSearchResponse.Items.Item) {
                     if (Array.isArray(response.result.ItemSearchResponse.Items.Item)) {
-                        products = response.result.ItemSearchResponse.Items.Item.map((p) => {
-                            return this.mapAmazonProduct(p);
-                        });
+                        const amzTotalPages = response.result.ItemSearchResponse.Items.TotalPages;
+
+                        results.items =
+                            response.result.ItemSearchResponse.Items.Item.map((p) => this.mapAmazonProduct(p));
+
+                        results.totalPages = amzTotalPages > 5 ? 5 : amzTotalPages;
+
                     } else {
-                        products.push(this.mapAmazonProduct(response.result.ItemSearchResponse.Items.Item));
+                        results.items.push(this.mapAmazonProduct(response.result.ItemSearchResponse.Items.Item));
                     }
                 }
 
-                resolve(products);
+                resolve(results);
             }).catch((err) => {
-                reject({ message: "An error has ocurred on processing the request" });
+                reject({ message: "An error has ocurred processing the request" });
             });
         });
     }

@@ -1,5 +1,6 @@
 import ProductRepository from "../Boundaries";
-import Product from "../Product";
+import Product from "../entities/Product";
+import SearchResult from "../entities/SearchResult";
 
 export default class GetProductsUseCase {
     private repository: ProductRepository;
@@ -8,14 +9,14 @@ export default class GetProductsUseCase {
         this.repository = resository;
     }
 
-    public execute(filter: string): Promise<Product[]> {
+    public execute(filter: string, page: number): Promise<SearchResult<Product>> {
         const asin = this.tryExtractAsin(filter);
 
         if (asin) {
             filter = asin;
         }
 
-        return this.repository.get(filter);
+        return this.repository.get(filter, page);
     }
 
     private tryExtractAsin(filter: string): string {

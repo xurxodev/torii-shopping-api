@@ -2,13 +2,18 @@ import * as csv from "csv-parser";
 import * as fs from "fs";
 import * as path from "path";
 import ProductRepository from "../domain/Boundaries";
-import Product from "../domain/Product";
+import Product from "../domain/entities/Product";
 
 import * as request from "request";
 import * as zlib from "zlib";
+import SearchResult from "../domain/entities/SearchResult";
 
 export default class ProductAwinRepository implements ProductRepository {
-    public products = [];
+    public results = {
+        items: [],
+        page: 1,
+        totalPages: 1
+    };
 
     constructor() {
 
@@ -32,15 +37,15 @@ export default class ProductAwinRepository implements ProductRepository {
             .pipe(gunzip)
             .pipe(csv({ separator: "|" }))
             .on("data", (data) => {
-                this.products.push(data);
+                this.results.items.push(data);
             })
             .on("end", () => {
-                console.log(this.products.length);
+                console.log(this.results.items.length);
             });
     }
 
     public getByAsin(asin: string): Promise<Product> {
-        const product = this.products.find((p) => p.asin === asin);
+        const product = this.results.items.find((p) => p.asin === asin);
 
         return new Promise((resolve, reject) => {
             setTimeout(() => {
@@ -53,30 +58,32 @@ export default class ProductAwinRepository implements ProductRepository {
         });
     }
 
-    public get(filter: string): Promise<Product[]> {
+    public get(filter: string): Promise<SearchResult<Product>> {
         return new Promise((resolve, reject) => {
-            let queryProducts = this.products;
+            let queryProducts = this.results.items;
 
             setTimeout(() => {
                 if (filter) {
-                    queryProducts = this.products.filter((p) => {
+                    queryProducts = this.results.items.filter((p) => {
                         return p.product_name &&
                             (p.product_name.toLowerCase().includes(filter.toLowerCase()) || !filter);
                     });
                 }
 
-                resolve(queryProducts.slice(0, 25)
-                    .map((p) => {
-                        return {
-                            asin: "",
-                            description: p.description,
-                            ean: p.product_GTIN,
-                            images: [p.merchant_image_url, p.large_image, p.alternate_image, p.alternate_image_two],
-                            name: p.product_name,
-                            upc: p.upc,
-                            url: p.aw_deep_link
-                        };
-                    }));
+                this.results.items = queryProducts.slice(0, 25)
+                .map((p) => {
+                    return {
+                        asin: "",
+                        description: p.description,
+                        ean: p.product_GTIN,
+                        images: [p.merchant_image_url, p.large_image, p.alternate_image, p.alternate_image_two],
+                        name: p.product_name,
+                        upc: p.upc,
+                        url: p.aw_deep_link
+                    };
+                });
+
+                resolve(this.results);
             }, 250);
         });
     }

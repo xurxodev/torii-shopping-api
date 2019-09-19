@@ -1,6 +1,7 @@
 
 import * as boom from "@hapi/boom";
 import * as hapi from "hapi";
+import { isNumber } from "util";
 import GetProductByAsinUseCase from "../domain/usecases/GetProductByAsinUseCase";
 import GetProductsUseCase from "../domain/usecases/GetProductsUseCase";
 
@@ -18,12 +19,21 @@ export default class ProductController {
 
     public getProducts(request: hapi.Request, h: hapi.ResponseToolkit): hapi.Lifecycle.ReturnValue {
         let query = "";
+        let page = 1;
 
         if (request.query.q) {
             query = request.query.q.toString();
         }
 
-        return this.getProductsUseCase.execute(query);
+        if (request.query.page) {
+            page = +request.query.page;
+
+            if (Number.isNaN(page) || page < 1 || page > 5) {
+                return boom.badRequest("The value you specified for page is invalid. Valid values must be between 1 and 5");
+            }
+        }
+
+        return this.getProductsUseCase.execute(query, page);
     }
 
     public getProductById(request: hapi.Request, h: hapi.ResponseToolkit): hapi.Lifecycle.ReturnValue {

@@ -1,5 +1,5 @@
 import ProductRepository from "../Boundaries";
-import Product from "../Product";
+import Product from "../entities/Product";
 
 export default class GetProductByAsinUseCase {
     private repository: ProductRepository;
