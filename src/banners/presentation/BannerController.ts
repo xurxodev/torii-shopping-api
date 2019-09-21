@@ -3,7 +3,7 @@ import * as boom from "@hapi/boom";
 import * as hapi from "hapi";
 import GetBannersUseCase from "../domain/usecases/GetBannersUseCase";
 
-export default class ProductController {
+export default class BannerController {
 
     private getBannersUseCase: GetBannersUseCase;
 

@@ -1,6 +1,7 @@
 import * as hapi from "hapi";
 import bannerRoutes from "./banners/presentation/BannerRoutes";
 import productRoutes from "./products/presentation/ProductRoutes";
+import suggestionRoutes from "./suggestions/presentation/SuggestionRoutes";
 
 console.log(this);
 
@@ -17,6 +18,11 @@ productRoutes().forEach((route: hapi.ServerRoute) => {
 
 // initialize banners routes
 bannerRoutes().forEach((route: hapi.ServerRoute) => {
+  server.route(route);
+});
+
+// initialize suggestions routes
+suggestionRoutes().forEach((route: hapi.ServerRoute) => {
   server.route(route);
 });
 
