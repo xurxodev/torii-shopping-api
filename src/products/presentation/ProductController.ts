@@ -20,6 +20,7 @@ export default class ProductController {
     public getProducts(request: hapi.Request, h: hapi.ResponseToolkit): hapi.Lifecycle.ReturnValue {
         let query = "";
         let page = 1;
+        let category = "";
 
         if (request.query.q) {
             query = request.query.q.toString();
@@ -33,7 +34,11 @@ export default class ProductController {
             }
         }
 
-        return this.getProductsUseCase.execute(query, page);
+        if (request.query.category) {
+            category = request.query.category.toString();
+        }
+
+        return this.getProductsUseCase.execute(query, page, category);
     }
 
     public getProductById(request: hapi.Request, h: hapi.ResponseToolkit): hapi.Lifecycle.ReturnValue {

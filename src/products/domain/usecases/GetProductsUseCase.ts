@@ -9,14 +9,14 @@ export default class GetProductsUseCase {
         this.repository = resository;
     }
 
-    public execute(filter: string, page: number): Promise<SearchResult<Product>> {
+    public execute(filter: string, page: number, category: string): Promise<SearchResult<Product>> {
         const asin = this.tryExtractAsin(filter);
 
         if (asin) {
             filter = asin;
         }
 
-        return this.repository.get(filter, page);
+        return this.repository.get(filter, page, category);
     }
 
     private tryExtractAsin(filter: string): string {

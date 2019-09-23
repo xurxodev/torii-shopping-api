@@ -35,9 +35,13 @@ export default class ProductAmazonRepository implements ProductRepository {
         });
     }
 
-    public get(filter: string, page: number = 1): Promise<SearchResult<Product>> {
+    public get(filter: string, page: number = 1, category: string): Promise<SearchResult<Product>> {
         if (filter.length === 0) {
             filter = " ";
+        }
+
+        if (category.length === 0) {
+            category = "All";
         }
 
         return new Promise((resolve, reject) => {
@@ -45,7 +49,7 @@ export default class ProductAmazonRepository implements ProductRepository {
                 ItemPage: page,
                 Keywords: filter,
                 ResponseGroup: "ItemAttributes,Offers,Images",
-                SearchIndex: "All"
+                SearchIndex: category
             }).then((response) => {
                 const results = {
                     items: [],
