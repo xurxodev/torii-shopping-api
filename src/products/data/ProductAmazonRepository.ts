@@ -95,8 +95,9 @@ export default class ProductAmazonRepository implements ProductRepository {
 
         if (p.LargeImage) {
             images.push(p.LargeImage.URL);
-        } else if (p.MediumImage) {
-            images.push(p.MediumImage.URL);
+        } else if (p.ImageSets && p.ImageSets.ImageSet &&
+            p.ImageSets.ImageSet.LargeImage && p.ImageSets.ImageSet.LargeImage.URL) {
+            images.push(p.ImageSets.ImageSet.LargeImage.URL);
         }
 
         return images;
