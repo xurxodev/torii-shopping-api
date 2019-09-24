@@ -64,7 +64,7 @@ export default class ProductAmazonRepository implements ProductRepository {
                         results.items =
                             response.result.ItemSearchResponse.Items.Item.map((p) => this.mapAmazonProduct(p));
 
-                        results.totalPages = amzTotalPages > 5 ? 5 : amzTotalPages;
+                        results.totalPages = +amzTotalPages > 5 ? 5 : +amzTotalPages;
 
                     } else {
                         results.items.push(this.mapAmazonProduct(response.result.ItemSearchResponse.Items.Item));
