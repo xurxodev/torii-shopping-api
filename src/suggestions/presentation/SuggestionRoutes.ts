@@ -8,13 +8,20 @@ export default function(): hapi.ServerRoute[] {
   const getSuggestionsUseCase = new GetSuggestionsUseCase(suggestionRepository);
   const suggestionsController = new SuggestionsController(getSuggestionsUseCase);
 
+  const suggestionsHandler = (request: hapi.Request, h: hapi.ResponseToolkit) => {
+    return suggestionsController.getSuggestions(request, h);
+  };
+
   return [
     {
-      handler: (request: hapi.Request, h: hapi.ResponseToolkit) => {
-        return suggestionsController.getSuggestions(request, h);
-      },
       method: "GET",
-      path: "/suggestions"
+      path: "/suggestions",
+      handler: suggestionsHandler
+    },
+    {
+      method: "GET",
+      path: "/v1/suggestions",
+      handler: suggestionsHandler
     }
   ];
 }

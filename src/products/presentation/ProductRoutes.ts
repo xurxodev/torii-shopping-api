@@ -19,20 +19,34 @@ export default function(): hapi.ServerRoute[] {
   const getProductByIdUseCase = new GetProductByAsinUseCase(productRepository);
   const productController = new ProductController(getProductsUseCase, getProductByIdUseCase);
 
+  const productsHandler = (request: hapi.Request, h: hapi.ResponseToolkit) => {
+    return productController.getProducts(request, h);
+  };
+
+  const productHandler = (request: hapi.Request, h: hapi.ResponseToolkit) => {
+    return productController.getProductById(request, h);
+  };
+
   return [
     {
-      handler: (request: hapi.Request, h: hapi.ResponseToolkit) => {
-        return productController.getProducts(request, h);
-      },
       method: "GET",
-      path: "/products"
+      path: "/products",
+      handler: productsHandler
     },
     {
-      handler: (request: hapi.Request, h: hapi.ResponseToolkit) => {
-        return productController.getProductById(request, h);
-      },
       method: "GET",
-      path: "/products/{asin}"
+      path: "/products/{asin}",
+      handler: productHandler
+    },
+    {
+      method: "GET",
+      path: "/v1/products",
+      handler: productsHandler
+    },
+    {
+      method: "GET",
+      path: "/v1/products/{asin}",
+      handler: productHandler
     }
   ];
 }

@@ -8,13 +8,20 @@ export default function(): hapi.ServerRoute[] {
   const getBannersUseCase = new GetBannersUseCase(bannerRepository);
   const bannerController = new BannerController(getBannersUseCase);
 
+  const bannersHandler = (request: hapi.Request, h: hapi.ResponseToolkit) => {
+    return bannerController.getBanners(request, h);
+  };
+
   return [
     {
-      handler: (request: hapi.Request, h: hapi.ResponseToolkit) => {
-        return bannerController.getBanners(request, h);
-      },
       method: "GET",
-      path: "/banners"
+      path: "/banners",
+      handler: bannersHandler
+    },
+    {
+      method: "GET",
+      path: "/v1/banners",
+      handler: bannersHandler
     }
   ];
 }
