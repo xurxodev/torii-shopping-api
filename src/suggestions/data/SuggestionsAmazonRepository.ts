@@ -134,7 +134,7 @@ export default class SuggestionsAmazonRepository implements SuggestionRepository
                         let scopes = [];
 
                         if (sug.scopes) {
-                            scopes = sug.scopes.filter((sco) => this.categories.some((cat) => cat.alias === sco.alias));
+                            scopes = sug.scopes.filter((sco) => this.categories.some((cat) => cat.alias === sco.value));
                         }
 
                         return {
