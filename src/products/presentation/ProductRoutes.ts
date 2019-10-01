@@ -1,7 +1,7 @@
 import * as dotenv from "dotenv";
 import * as hapi from "hapi";
 import jwtAuthentication from "../../users/authentication/JwtAuthentication";
-import ProductRepository from "../data/ProductAmazonRepository";
+import ProductRepository from "../data/ProductRepository";
 import GetProductByAsinUseCase from "../domain/usecases/GetProductByAsinUseCase";
 import GetProductsUseCase from "../domain/usecases/GetProductsUseCase";
 import ProductController from "../presentation/ProductController";

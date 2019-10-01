@@ -1,6 +1,6 @@
-import ProductRepository from "../Boundaries";
 import Product from "../entities/Product";
 import SearchResult from "../entities/SearchResult";
+import ProductRepository from "../repositories/ProductRepository";
 
 export default class GetProductsUseCase {
     private repository: ProductRepository;

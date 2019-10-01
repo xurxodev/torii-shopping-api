@@ -1,8 +1,8 @@
 
 import { OperationHelper } from "apac";
-import ProductRepository from "../domain/Boundaries";
 import Product from "../domain/entities/Product";
 import SearchResult from "../domain/entities/SearchResult";
+import ProductRepository from "../domain/repositories/ProductRepository";
 
 export default class ProductAmazonRepository implements ProductRepository {
     public opHelper: OperationHelper;
@@ -79,15 +79,34 @@ export default class ProductAmazonRepository implements ProductRepository {
     }
 
     private mapAmazonProduct(p: any) {
-        return {
+        const product = {
             asin: p.ASIN,
             description: this.mapFeature(p),
             ean: p.ItemAttributes.EAN,
             images: this.mapImages(p),
             name: p.ItemAttributes.Title,
             upc: p.ItemAttributes.UPC,
-            url: p.DetailPageURL
+            url: p.DetailPageURL,
+            prices: []
         };
+
+        if (p.Offers && p.Offers.Offer && p.Offers.Offer.OfferListing &&
+            p.Offers.Offer.OfferListing.Price) {
+            const currency = p.Offers.Offer.OfferListing.Price.CurrencyCode;
+            const formattedPrice = p.Offers.Offer.OfferListing.Price.FormattedPrice;
+            const amount = formattedPrice.replace(currency, "").trim();
+
+            const price = {
+                store: "Amazon",
+                url: p.DetailPageURL,
+                price: amount,
+                currency
+            };
+
+            product.prices.push(price);
+        }
+
+        return product;
     }
 
     private mapImages(p: any) {

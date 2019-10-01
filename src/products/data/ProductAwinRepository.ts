@@ -1,8 +1,8 @@
 import * as csv from "csv-parser";
 import * as fs from "fs";
 import * as path from "path";
-import ProductRepository from "../domain/Boundaries";
 import Product from "../domain/entities/Product";
+import ProductRepository from "../domain/repositories/ProductRepository";
 
 import * as request from "request";
 import * as zlib from "zlib";

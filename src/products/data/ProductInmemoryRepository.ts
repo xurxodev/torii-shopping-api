@@ -1,6 +1,6 @@
-import ProductRepository from "../domain/Boundaries";
 import Product from "../domain/entities/Product";
 import SearchResult from "../domain/entities/SearchResult";
+import ProductRepository from "../domain/repositories/ProductRepository";
 
 export default class ProductInmemoryRepository implements ProductRepository {
     public results = {
@@ -14,7 +14,8 @@ export default class ProductInmemoryRepository implements ProductRepository {
                     "https://images-na.ssl-images-amazon.com/images/I/219k8LLJZpL.jpg"
                 ],
                 name: `Google Pixel 3 14 cm 4 GB 64 GB SIM única 4G Blanco 2915 mAh - Smartphone (14 cm , 4 GB, 64 GB, 12,2 MP, Android 9.0, Blanco)`,
-                upc: "842776107695"
+                upc: "842776107695",
+                prices: []
             },
             {
                 asin: "B07HMGKC1T",
@@ -25,7 +26,8 @@ export default class ProductInmemoryRepository implements ProductRepository {
                     "https://images-na.ssl-images-amazon.com/images/I/41p9ZCOyH6L._SL1024_.jpg"
                 ],
                 name: `Apple iPhone XR (de 64GB) - Blanco`,
-                upc: "190198770844"
+                upc: "190198770844",
+                prices: []
             }],
         page: 1,
         totalPages: 1

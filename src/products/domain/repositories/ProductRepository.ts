@@ -1,5 +1,5 @@
-import Product from "./entities/Product";
-import SearchResult from "./entities/SearchResult";
+import Product from "../entities/Product";
+import SearchResult from "../entities/SearchResult";
 
 export default interface ProductRepository<> {
     getByAsin(asin: string): Promise<Product>;
