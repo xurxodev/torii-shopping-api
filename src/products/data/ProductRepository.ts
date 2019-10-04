@@ -1,6 +1,9 @@
 
 import { OperationHelper } from "apac";
+import * as MongoClient from "mongodb";
+
 import Product from "../domain/entities/Product";
+import ProductPrice from "../domain/entities/ProductPrice";
 import SearchResult from "../domain/entities/SearchResult";
 import ProductRepository from "../domain/repositories/ProductRepository";
 
@@ -8,6 +11,7 @@ export default class ProductAmazonRepository implements ProductRepository {
     public opHelper: OperationHelper;
 
     constructor(associateTag: string, accessKey: string, secretAccessKey: string, locale: string) {
+
         this.opHelper = new OperationHelper({
             assocId: associateTag,
             awsId: accessKey,
@@ -25,7 +29,12 @@ export default class ProductAmazonRepository implements ProductRepository {
             }).then((response) => {
                 if (response.result.ItemLookupResponse.Items.Item) {
                     const product = this.mapAmazonProduct(response.result.ItemLookupResponse.Items.Item);
-                    resolve(product);
+
+                    this.getOtherPrices(product.ean)
+                        .then((prices) => {
+                            product.prices.push(...prices);
+                            resolve(product);
+                        }).catch((err) => resolve(product));
                 } else {
                     reject({ message: `Does not exists any product with asin ${asin}` });
                 }
@@ -134,5 +143,37 @@ export default class ProductAmazonRepository implements ProductRepository {
         }
 
         return description;
+    }
+
+    private getOtherPrices(id: string): Promise<ProductPrice[]> {
+
+        return new Promise((resolve, reject) => {
+            let productPrices: ProductPrice[];
+
+            const url = "mongodb+srv://xurxodev:HQqRTif8jRDTFvNz@cluster0-lctpr.mongodb.net/test?retryWrites=true&w=majority";
+            const dbName = "toriiShoppingDB";
+
+            // Create a new MongoClient
+            const mongoClient = new MongoClient.MongoClient(url, { useUnifiedTopology: true });
+
+            // Use connect method to connect to the Server
+            mongoClient.connect((errCon, client) => {
+                if (errCon) { reject(errCon); }
+
+                const db = client.db(dbName);
+
+                // Insert a single document
+                db.collection("productPrices").findOne({ _id: id }, (err, r) => {
+                    if (err) { reject(err); }
+
+                    if (r) {
+                        productPrices = r.prices;
+                    }
+
+                    resolve(productPrices);
+                    client.close();
+                });
+            });
+        });
     }
 }
