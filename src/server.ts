@@ -5,8 +5,6 @@ import suggestionRoutes from "./suggestions/presentation/SuggestionRoutes";
 import jwtAuthentication from "./users/authentication/JwtAuthentication";
 import userRoutes from "./users/presentation/UserRoutes";
 
-console.log(this);
-
 // create a server with a host and port
 const server: hapi.Server = new hapi.Server({
   host: "0.0.0.0",
