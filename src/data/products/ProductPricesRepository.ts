@@ -85,7 +85,7 @@ export default class ProductPricesRepository implements ProductPricesResository 
 
                 const identifier = "import_sumary";
 
-                col.replaceOne({ _id: identifier }, {
+                const summary = {
                     _id: identifier,
                     ok: importResult.ok,
                     writeErrors: importResult.getWriteErrors(),
@@ -95,14 +95,16 @@ export default class ProductPricesRepository implements ProductPricesResository 
                     nModified: importResult.nModified,
                     nRemoved: importResult.nRemoved,
                     lastOp: importResult.getLastOp()
-                }, { upsert: true },
+                };
+
+                col.replaceOne({ _id: identifier }, summary , { upsert: true },
                     (err, summaryResult) => {
                         if (err) {
                             reject(err);
                             console.log(err);
                         }
 
-                        console.log(`Saved import summary:${summaryResult}`);
+                        console.log(`Saved import summary:${JSON.stringify(summary)}`);
                         resolve();
                         client.close();
                     });
