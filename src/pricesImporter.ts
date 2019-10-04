@@ -3,7 +3,7 @@ import * as dotenv from "dotenv";
 import { BulkWriteResult, MongoClient } from "mongodb";
 import * as request from "request";
 import * as zlib from "zlib";
-import ProductPrice from "./products/domain/entities/ProductPrice";
+import ProductPrice from "./domain/products/entities/ProductPrice";
 
 dotenv.config();
 

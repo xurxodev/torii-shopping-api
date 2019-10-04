@@ -1,9 +1,9 @@
 import * as hapi from "hapi";
-import bannerRoutes from "./banners/presentation/BannerRoutes";
-import productRoutes from "./products/presentation/ProductRoutes";
-import suggestionRoutes from "./suggestions/presentation/SuggestionRoutes";
-import jwtAuthentication from "./users/authentication/JwtAuthentication";
-import userRoutes from "./users/presentation/UserRoutes";
+import bannerRoutes from "./api/banners/BannerRoutes";
+import productRoutes from "./api/products/ProductRoutes";
+import suggestionRoutes from "./api/suggestions/SuggestionRoutes";
+import jwtAuthentication from "./api/users/JwtAuthentication";
+import userRoutes from "./api/users/UserRoutes";
 
 // create a server with a host and port
 const server: hapi.Server = new hapi.Server({
