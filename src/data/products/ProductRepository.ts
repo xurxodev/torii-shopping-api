@@ -98,23 +98,25 @@ export default class ProductAmazonRepository implements ProductRepository {
             url: p.DetailPageURL,
             prices: []
         };
+        let currency = "";
+        let amount = "";
 
         if (p.Offers && p.Offers.Offer && p.Offers.Offer.OfferListing &&
             p.Offers.Offer.OfferListing.Price) {
-            const currency = p.Offers.Offer.OfferListing.Price.CurrencyCode;
             const formattedPrice = p.Offers.Offer.OfferListing.Price.FormattedPrice;
-            const amount = formattedPrice.replace(currency, "").trim();
-
-            const price = {
-                store: "Amazon",
-                storeImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/100px-Amazon_logo.svg.png",
-                url: p.DetailPageURL,
-                price: amount,
-                currency
-            };
-
-            product.prices.push(price);
+            currency = p.Offers.Offer.OfferListing.Price.CurrencyCode;
+            amount = formattedPrice.replace(currency, "").trim();
         }
+
+        const price = {
+            store: "Amazon",
+            storeImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/100px-Amazon_logo.svg.png",
+            url: p.DetailPageURL,
+            price: amount,
+            currency
+        };
+
+        product.prices.push(price);
 
         return product;
     }
