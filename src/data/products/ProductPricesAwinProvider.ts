@@ -16,7 +16,7 @@ export default class ProductPricesAwinProvider implements ProductPricesProvider 
 
         return new Promise((resolve, reject) => {
 
-            const fileUrl = `https://productdata.awin.com/datafeed/download/apikey/${process.env.AWIN_API_KEY}/language/any/fid/${process.env.AWIN_PROGRAMS}/columns/aw_deep_link,aw_product_id,merchant_product_id,merchant_id,merchant_name,search_price,currency,ean,isbn,upc,mpn,product_GTIN,display_price/format/csv/delimiter/%7C/compression/gzip/`;
+            const fileUrl = `https://productdata.awin.com/datafeed/download/apikey/${process.env.AWIN_API_KEY}/language/any/fid/${process.env.AWIN_PROGRAMS}/columns/aw_deep_link,aw_product_id,merchant_product_id,merchant_id,merchant_name,search_price,currency,saving,ean,isbn,upc,mpn,product_GTIN,display_price/format/csv/delimiter/%7C/compression/gzip/`;
 
             const gunzip = zlib.createGunzip();
 
@@ -56,6 +56,17 @@ export default class ProductPricesAwinProvider implements ProductPricesProvider 
             storeImage = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Acer_2011.svg/100px-Acer_2011.svg.png";
         }
 
+        let price: number = 0.0;
+        let priceString: string = "";
+
+        if (awinProduct.saving) {
+            priceString = awinProduct.saving.replace("EUR", "").trim();
+        } else {
+            priceString = awinProduct.search_price;
+        }
+
+        price  = +(+priceString).toFixed(2);
+
         return {
             _id: awinProduct.product_GTIN ? awinProduct.product_GTIN : awinProduct.ean,
             asin: "",
@@ -67,7 +78,7 @@ export default class ProductPricesAwinProvider implements ProductPricesProvider 
                     store: awinProduct.merchant_name,
                     storeImage,
                     url: awinProduct.aw_deep_link,
-                    price: (+awinProduct.search_price).toFixed(2).replace(".", ","),
+                    price,
                     currency: awinProduct.currency
                 }
             ]
