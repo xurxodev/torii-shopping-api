@@ -35,8 +35,10 @@ export default class ProductAmazonRepository implements ProductRepository {
 
                             product.prices = product.prices.sort((a, b) => {
                                 return a.price - b.price;
-                              }).map((pp) => {
-                                return { ...pp, price: pp.price.toFixed(2).replace(".", ",")};
+                            });
+
+                            product.prices = product.prices.map((pp) => {
+                                return { ...pp, price: this.formatPrice(pp.price) };
                             });
 
                             resolve(product);
@@ -86,11 +88,27 @@ export default class ProductAmazonRepository implements ProductRepository {
                     }
                 }
 
+                results.items = results.items.map((p) => {
+                    const prices = p.prices.map((pp) => {
+                        return { ...pp, price: this.formatPrice(pp.price)};
+                    });
+
+                    return {...p, prices};
+                });
+
                 resolve(results);
             }).catch((err) => {
                 reject({ message: "An error has ocurred processing the request" });
             });
         });
+    }
+
+    private formatPrice(price: number) {
+        let formattedPrice = "";
+        if (price > 0) {
+            formattedPrice = price.toFixed(2).replace(".", ",");
+        }
+        return formattedPrice;
     }
 
     private mapAmazonProduct(p: any) {
@@ -104,8 +122,8 @@ export default class ProductAmazonRepository implements ProductRepository {
             url: p.DetailPageURL,
             prices: []
         };
-        let currency;
-        let amount;
+        let currency = "";
+        let amount = 0.0;
 
         if (p.Offers && p.Offers.Offer && p.Offers.Offer.OfferListing &&
             p.Offers.Offer.OfferListing.Price) {
