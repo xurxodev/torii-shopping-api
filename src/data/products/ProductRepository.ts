@@ -19,39 +19,6 @@ export default class ProductAmazonRepository implements ProductRepository {
         });
     }
 
-    public getByAsin(asin: string): Promise<Product> {
-        return new Promise((resolve, reject) => {
-            this.opHelper.execute("ItemLookup", {
-                IdType: "ASIN",
-                ItemId: asin,
-                ResponseGroup: "ItemAttributes,Offers,Images"
-            }).then((response) => {
-                if (response.result.ItemLookupResponse.Items.Item) {
-                    const product = this.mapAmazonProduct(response.result.ItemLookupResponse.Items.Item);
-
-                    this.getOtherPrices(product.ean)
-                        .then((prices) => {
-                            product.prices.push(...prices);
-
-                            product.prices = product.prices.sort((a, b) => {
-                                return a.price - b.price;
-                            });
-
-                            product.prices = product.prices.map((pp) => {
-                                return { ...pp, price: this.formatPrice(pp.price) };
-                            });
-
-                            resolve(product);
-                        }).catch((err) => resolve(product));
-                } else {
-                    reject({ message: `Does not exists any product with asin ${asin}` });
-                }
-            }).catch((err) => {
-                reject({ message: "An error has ocurred processing the request" });
-            });
-        });
-    }
-
     public get(filter: string, page: number = 1, category: string): Promise<SearchResult<Product>> {
         if (filter.length === 0) {
             filter = " ";
@@ -89,9 +56,7 @@ export default class ProductAmazonRepository implements ProductRepository {
                 }
 
                 results.items = results.items.map((p) => {
-                    const prices = p.prices.map((pp) => {
-                        return { ...pp, price: this.formatPrice(pp.price)};
-                    });
+                    const prices = this.formatPrices(p.prices);
 
                     return {...p, prices};
                 });
@@ -103,12 +68,37 @@ export default class ProductAmazonRepository implements ProductRepository {
         });
     }
 
-    private formatPrice(price: number) {
-        let formattedPrice = "";
-        if (price > 0) {
-            formattedPrice = price.toFixed(2).replace(".", ",");
-        }
-        return formattedPrice;
+    public getByAsin(asin: string): Promise<Product> {
+        return new Promise((resolve, reject) => {
+            this.opHelper.execute("ItemLookup", {
+                IdType: "ASIN",
+                ItemId: asin,
+                ResponseGroup: "ItemAttributes,Offers,Images"
+            }).then((response) => {
+                if (response.result.ItemLookupResponse.Items.Item) {
+                    const product = this.mapAmazonProduct(response.result.ItemLookupResponse.Items.Item);
+
+                    this.getOtherPrices(product.ean)
+                        .then((prices) => {
+                            if (prices) {
+                                product.prices.push(...prices);
+
+                                product.prices = product.prices.sort((a, b) => {
+                                    return a.price - b.price;
+                                });
+                            }
+
+                            product.prices = this.formatPrices(product.prices);
+
+                            resolve(product);
+                        }).catch((err) => resolve(product));
+                } else {
+                    reject({ message: `Does not exists any product with asin ${asin}` });
+                }
+            }).catch((err) => {
+                reject({ message: "An error has ocurred processing the request" });
+            });
+        });
     }
 
     private mapAmazonProduct(p: any) {
@@ -206,5 +196,19 @@ export default class ProductAmazonRepository implements ProductRepository {
                 });
             });
         });
+    }
+
+    private formatPrices(productPrices: any[]) {
+        return productPrices.map((pp) => {
+            return { ...pp, price: this.formatPrice(pp.price) };
+        });
+    }
+
+    private formatPrice(price: number) {
+        let formattedPrice = "";
+        if (price > 0) {
+            formattedPrice = price.toFixed(2).replace(".", ",");
+        }
+        return formattedPrice;
     }
 }
