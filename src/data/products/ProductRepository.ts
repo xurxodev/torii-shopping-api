@@ -1,4 +1,3 @@
-
 import { OperationHelper } from "apac";
 import * as MongoClient from "mongodb";
 
@@ -33,6 +32,13 @@ export default class ProductAmazonRepository implements ProductRepository {
                     this.getOtherPrices(product.ean)
                         .then((prices) => {
                             product.prices.push(...prices);
+
+                            product.prices = product.prices.sort((a, b) => {
+                                return a.price - b.price;
+                              }).map((pp) => {
+                                return { ...pp, price: pp.price.toFixed(2).replace(".", ",")};
+                            });
+
                             resolve(product);
                         }).catch((err) => resolve(product));
                 } else {
@@ -98,14 +104,15 @@ export default class ProductAmazonRepository implements ProductRepository {
             url: p.DetailPageURL,
             prices: []
         };
-        let currency = "";
-        let amount = "";
+        let currency;
+        let amount;
 
         if (p.Offers && p.Offers.Offer && p.Offers.Offer.OfferListing &&
             p.Offers.Offer.OfferListing.Price) {
-            const formattedPrice = p.Offers.Offer.OfferListing.Price.FormattedPrice;
+            const noformattedPrice = p.Offers.Offer.OfferListing.Price.Amount;
             currency = p.Offers.Offer.OfferListing.Price.CurrencyCode;
-            amount = formattedPrice.replace(currency, "").trim();
+            amount = +(noformattedPrice.slice(0, noformattedPrice.length - 2) + "." +
+                noformattedPrice.slice(noformattedPrice.length - 2));
         }
 
         const price = {
