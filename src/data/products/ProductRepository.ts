@@ -139,17 +139,19 @@ export default class ProductAmazonRepository implements ProductRepository {
     private mapImages(p: any) {
         const images = [];
 
+        if (p.LargeImage) {
+            images.push(p.LargeImage.URL);
+        }
+
         if (p.ImageSets && p.ImageSets.ImageSet && Array.isArray(p.ImageSets.ImageSet)) {
             p.ImageSets.ImageSet.forEach((imageSet) => {
                 images.push(imageSet.LargeImage.URL);
             });
         } else if (p.ImageSets && p.ImageSets.ImageSet && p.ImageSets.ImageSet.LargeImage) {
             images.push(p.ImageSets.ImageSet.LargeImage.URL);
-        } else if (p.LargeImage) {
-            images.push(p.LargeImage.URL);
         }
 
-        return images;
+        return Array.from(new Set(images));
     }
 
     private mapFeature(amzProduct: any) {
