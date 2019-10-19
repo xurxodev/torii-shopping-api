@@ -1,5 +1,5 @@
-import Banner from "../entities/Banner";
+import { BannerGroup } from "../entities/Banner";
 
 export default interface BannerRepository<> {
-    get(): Promise<{ [key: string]: Banner[] }>;
+    get(): Promise<BannerGroup[]>;
 }

@@ -1,5 +1,5 @@
 import BannerRepository from "../boundaries/BannerRepository";
-import Banner from "../entities/Banner";
+import {BannerGroup} from "../entities/Banner";
 
 export default class GetBannersUseCase {
     private repository: BannerRepository;
@@ -8,7 +8,7 @@ export default class GetBannersUseCase {
         this.repository = resository;
     }
 
-    public execute(): Promise<{ [key: string]: Banner[] }>  {
+    public execute(): Promise<BannerGroup[]>  {
         return this.repository.get();
     }
 }
