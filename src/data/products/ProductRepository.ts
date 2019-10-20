@@ -6,6 +6,8 @@ import Product from "../../domain/products/entities/Product";
 import ProductPrice from "../../domain/products/entities/ProductPrice";
 import SearchResult from "../../domain/products/entities/SearchResult";
 
+const mongoUrl = process.env.DB_CONNECTION;
+
 export default class ProductAmazonRepository implements ProductRepository {
     public opHelper: OperationHelper;
 
@@ -173,11 +175,10 @@ export default class ProductAmazonRepository implements ProductRepository {
         return new Promise((resolve, reject) => {
             let productPrices: ProductPrice[];
 
-            const url = "mongodb+srv://xurxodev:HQqRTif8jRDTFvNz@cluster0-lctpr.mongodb.net/test?retryWrites=true&w=majority";
             const dbName = "toriiShoppingDB";
 
             // Create a new MongoClient
-            const mongoClient = new MongoClient.MongoClient(url, { useUnifiedTopology: true });
+            const mongoClient = new MongoClient.MongoClient(mongoUrl, { useUnifiedTopology: true });
 
             // Use connect method to connect to the Server
             mongoClient.connect((errCon, client) => {
