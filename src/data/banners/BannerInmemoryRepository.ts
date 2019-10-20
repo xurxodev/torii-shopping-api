@@ -6,36 +6,44 @@ export default class BannerInmemoryRepository implements BannerRepository {
         {
             name: "Carousel",
             type: "Carousel",
-            banners: [{
-                imageUrl: "https://m.media-amazon.com/images/G/30/Phoenix/Fawkes/Quattro/1909/Associates-470X200.jpg",
-                linkUrl: "https://www.amazon.es/dp/B07VGLKHWP?tag=toriishopping-21"
-            },
-            {
-                imageUrl: "https://m.media-amazon.com/images/G/30/kindle/merch/2019/campaign/89341241/xsite/jaeger-assoc-470x200.jpg",
-                linkUrl: "https://www.amazon.es/dp/B07FQ4DJ83?tag=toriishopping-21"
-            },
-            {
-                imageUrl: "https://m.media-amazon.com/images/G/30/kindle/merch/2019/campaign/53663101/xsite//tkms-es-associates-470x200.jpg",
-                linkUrl: "https://www.amazon.es/dp/B07PVCVBN7?tag=toriishopping-21"
-            },
-            {
-                imageUrl: "https://m.media-amazon.com/images/G/30/ES-hq/2019/img/Prime/XCM_CUTTLE_1188232_student_Bounty_Internal_470x200_Prime_CUTT_b9516949_2494_4edf_a2c8_fdd1c33dba36_png.png",
-                linkUrl: "http://www.amazon.es/joinstudent?tag=toriishopping-21"
-            }]
+            banners: [
+                {
+                    imageUrl: "https://m.media-amazon.com/images/G/30/Phoenix/Fawkes/Quattro/1909/Associates-470X200.jpg",
+                    linkUrl: "https://www.amazon.es/dp/B07VGLKHWP?tag=toriishopping-21"
+                },
+                {
+                    imageUrl: "https://m.media-amazon.com/images/G/30/kindle/merch/2019/campaign/89341241/xsite/jaeger-assoc-470x200.jpg",
+                    linkUrl: "https://www.amazon.es/dp/B07FQ4DJ83?tag=toriishopping-21"
+                },
+                {
+                    imageUrl: "https://m.media-amazon.com/images/G/30/kindle/merch/2019/campaign/53663101/xsite//tkms-es-associates-470x200.jpg",
+                    linkUrl: "https://www.amazon.es/dp/B07PVCVBN7?tag=toriishopping-21"
+                },
+                {
+                    imageUrl: "https://m.media-amazon.com/images/G/30/ES-hq/2019/img/Prime/XCM_CUTTLE_1188232_student_Bounty_Internal_470x200_Prime_CUTT_b9516949_2494_4edf_a2c8_fdd1c33dba36_png.png",
+                    linkUrl: "http://www.amazon.es/joinstudent?tag=toriishopping-21"
+                },
+                {
+                    imageUrl: "https://images-na.ssl-images-amazon.com/images/G/30/kindle/merch/2019/campaign/3811589/xsite/associate-desktop-470x200_v2.jpg",
+                    linkUrl: "https://www.amazon.es/dp/B07KD6624B?tag=toriishopping-21"
+                }
+            ]
         },
         {
             name: "Ofertas",
             type: "HorizontalList",
-            banners: [{
-                imageUrl: "https://www.awin1.com/cshow.php?s=2398180&v=11640&q=337171&r=637907",
-                linkUrl: "https://www.awin1.com/cread.php?s=2398180&v=11640&q=337171&r=637907"
-            }, {
-                imageUrl: "https://www.awin1.com/cshow.php?s=2169865&v=11640&q=337171&r=637907",
-                linkUrl: "https://www.awin1.com/cread.php?s=2169865&v=11640&q=337171&r=637907"
-            }, {
-                imageUrl: "https://www.awin1.com/cshow.php?s=2374752&v=11640&q=337796&r=637907",
-                linkUrl: "https://www.awin1.com/cread.php?s=2374752&v=11640&q=337796&r=637907"
-            }]
+            banners: [
+                {
+                    imageUrl: "https://www.awin1.com/cshow.php?s=2398180&v=11640&q=337171&r=637907",
+                    linkUrl: "https://www.awin1.com/cread.php?s=2398180&v=11640&q=337171&r=637907"
+                }, {
+                    imageUrl: "https://www.awin1.com/cshow.php?s=2169865&v=11640&q=337171&r=637907",
+                    linkUrl: "https://www.awin1.com/cread.php?s=2169865&v=11640&q=337171&r=637907"
+                }, {
+                    imageUrl: "https://www.awin1.com/cshow.php?s=2374752&v=11640&q=337796&r=637907",
+                    linkUrl: "https://www.awin1.com/cread.php?s=2374752&v=11640&q=337796&r=637907"
+                }
+            ]
         },
         {
             name: "Productos",
