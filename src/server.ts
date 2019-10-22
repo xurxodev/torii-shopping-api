@@ -25,6 +25,17 @@ async function start() {
 
     server.auth.default(jwtAuthentication.name);
 
+    server.route([
+      {
+        method: "GET",
+        path: "/",
+        options: { auth: false },
+        handler: async (req, res) => {
+          return "Welcome to torii shopping API!!";
+        }
+      }
+    ]);
+
     // initialize users routes
     userRoutes().forEach((route: hapi.ServerRoute) => {
       server.route(route);
