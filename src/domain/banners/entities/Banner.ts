@@ -1,6 +1,7 @@
 export interface Banner {
     imageUrl: string;
     linkUrl: string;
+    asin: string;
 }
 
 export interface BannerGroup {
