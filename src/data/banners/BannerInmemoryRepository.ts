@@ -44,11 +44,6 @@ export default class BannerInmemoryRepository implements BannerRepository {
                     linkUrl: "https://www.amazon.es/Fujifilm-Fujinon-XF-60mm-Distancia/dp/B006ZSNU4O?SubscriptionId=AKIAIBVJ6L7NGI65W7AA&tag=toriishopping-21&linkCode=xm2&camp=2025&creative=165953&creativeASIN=B006ZSNU4O"
                 },
                 {
-                    asin: "00A35X8ZG",
-                    imageUrl: "https://images-eu.ssl-images-amazon.com/images/I/51FDyBrykSL.jpg",
-                    linkUrl: "https://www.amazon.es/Sigma-340306-35-HSM-distancia/dp/B00A35X8ZG?psc=1&SubscriptionId=AKIAIBVJ6L7NGI65W7AA&tag=toriishopping-21&linkCode=xm2&camp=2025&creative=165953&creativeASIN=B00A35X8ZG"
-                },
-                {
                     asin: "B07PQZR5JF",
                     imageUrl: "https://images-eu.ssl-images-amazon.com/images/I/41VyaPZLwpL.jpg",
                     linkUrl: "https://www.amazon.es/Samsung-2019-43RU7405-serie-RU7400/dp/B07PQZR5JF?psc=1&SubscriptionId=AKIAIBVJ6L7NGI65W7AA&tag=toriishopping-21&linkCode=xm2&camp=2025&creative=165953&creativeASIN=B07PQZR5JF"
