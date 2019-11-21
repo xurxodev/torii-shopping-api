@@ -67,10 +67,16 @@ export default class ProductPricesAwinProvider implements ProductPricesProvider 
 
         price  = +(+priceString).toFixed(2);
 
+        let ean = awinProduct.ean;
+
+        if (awinProduct.ean.includes(";")) {
+            ean = awinProduct.ean.split(";")[0];
+        }
+
         return {
-            _id: awinProduct.product_GTIN ? awinProduct.product_GTIN : awinProduct.ean,
+            _id: awinProduct.product_GTIN ? awinProduct.product_GTIN : ean,
             asin: "",
-            ean: awinProduct.ean,
+            ean,
             upc: awinProduct.upc,
             isbn: awinProduct.isbn,
             prices: [
