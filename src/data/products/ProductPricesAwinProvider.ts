@@ -8,6 +8,9 @@ import ProductPrices from "../../domain/products/entities/ProductPrices";
 
 dotenv.config();
 
+const nikeMerchantName = "Nike ES";
+const acerMerchantName = "Acer ES";
+
 export default class ProductPricesAwinProvider implements ProductPricesProvider {
     public get(): Promise<ProductPrices[]> {
         console.log("Retrieving product prices from awin ...");
@@ -17,7 +20,7 @@ export default class ProductPricesAwinProvider implements ProductPricesProvider 
         return new Promise((resolve, reject) => {
 
             const fileUrl = `https://productdata.awin.com/datafeed/download/apikey/${process.env.AWIN_API_KEY}/language/any/fid/${process.env.AWIN_PROGRAMS}/columns/aw_deep_link,aw_product_id,merchant_product_id,merchant_id,merchant_name,search_price,currency,saving,ean,isbn,upc,mpn,product_GTIN,display_price/format/csv/delimiter/%7C/compression/gzip/`;
-
+            console.log(fileUrl);
             const gunzip = zlib.createGunzip();
 
             request.get({ url: fileUrl, gzip: true })
@@ -52,8 +55,10 @@ export default class ProductPricesAwinProvider implements ProductPricesProvider 
     private parseProduct(awinProduct: any): any {
         let storeImage = `https://ui2.awin.com/logos/${awinProduct.merchant_id}/logo.gif`;
 
-        if (awinProduct.merchant_name === "Acer ES") {
+        if (awinProduct.merchant_name === acerMerchantName) {
             storeImage = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Acer_2011.svg/100px-Acer_2011.svg.png";
+        } else if (awinProduct.merchant_name === nikeMerchantName) {
+            storeImage = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Logo_NIKE.svg/100px-Logo_NIKE.svg.png";
         }
 
         let price: number = 0.0;
@@ -67,17 +72,14 @@ export default class ProductPricesAwinProvider implements ProductPricesProvider 
 
         price  = +(+priceString).toFixed(2);
 
-        let ean = awinProduct.ean;
-
-        if (awinProduct.ean.includes(";")) {
-            ean = awinProduct.ean.split(";")[0];
-        }
+        const ean = this.getEan(awinProduct);
+        const upc = this.getUpc(awinProduct);
 
         return {
             _id: awinProduct.product_GTIN ? awinProduct.product_GTIN : ean,
             asin: "",
             ean,
-            upc: awinProduct.upc,
+            upc,
             isbn: awinProduct.isbn,
             prices: [
                 {
@@ -91,4 +93,27 @@ export default class ProductPricesAwinProvider implements ProductPricesProvider 
         };
     }
 
+    private getEan(awinProduct: any) {
+        let ean = awinProduct.ean;
+
+        if (awinProduct.ean.includes(";")) {
+            ean = awinProduct.ean.split(";")[0];
+        }
+
+        if (!ean && awinProduct.merchant_name === nikeMerchantName) {
+            ean = awinProduct.merchant_product_id.substring(1, 14);
+        }
+
+        return ean;
+    }
+
+    private getUpc(awinProduct: any) {
+        let upc = awinProduct.upc;
+
+        if (!upc && awinProduct.merchant_name === nikeMerchantName) {
+            upc = awinProduct.merchant_product_id;
+        }
+
+        return upc;
+    }
 }
