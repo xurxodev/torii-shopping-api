@@ -74,9 +74,10 @@ export default class ProductPricesAwinProvider implements ProductPricesProvider 
 
         const ean = this.getEan(awinProduct);
         const upc = this.getUpc(awinProduct);
+        const gtin = this.getGtin(awinProduct);
 
         return {
-            _id: awinProduct.product_GTIN ? awinProduct.product_GTIN : ean,
+            _id: gtin ? gtin : ean,
             asin: "",
             ean,
             upc,
@@ -115,5 +116,15 @@ export default class ProductPricesAwinProvider implements ProductPricesProvider 
         }
 
         return upc;
+    }
+
+    private getGtin(awinProduct: any) {
+        let gtin = awinProduct.product_GTIN;
+
+        if (gtin) {
+            gtin = gtin.substring(1, 14);
+        }
+
+        return gtin;
     }
 }
