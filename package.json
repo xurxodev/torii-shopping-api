@@ -19,13 +19,13 @@
   },
   "dependencies": {
     "@hapi/boom": "^7.4.3",
-    "apac": "^3.0.2",
     "csv-parser": "^2.3.0",
     "dotenv": "^8.1.0",
     "hapi": "^18.1.0",
     "hapi-auth-jwt2": "^8.6.2",
     "mongodb": "^3.3.2",
     "node-fetch": "^2.6.0",
+    "paapi5-nodejs-sdk": "^1.0.1",
     "request": "^2.88.0",
     "zlib": "^1.0.5"
   },
@@ -37,7 +37,7 @@
     "@types/request": "^2.48.3",
     "nodemon": "^1.19.1",
     "tslint": "^5.19.0",
-    "typescript": "^3.6.2"
+    "typescript": "^3.7.4"
   },
   "engines": {
     "node": "10.x"

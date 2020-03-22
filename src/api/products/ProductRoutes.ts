@@ -13,7 +13,9 @@ export default function(): hapi.ServerRoute[] {
   const productRepository = new ProductRepository(
     process.env.AMZ_ASSOCIATE_TAG,
     process.env.AMZ_ACCESS_KEY_ID,
-    process.env.AMZ_SECRET_ACCESS_KEY, "ES");
+    process.env.AMZ_SECRET_ACCESS_KEY,
+    process.env.AMZ_HOST,
+    process.env.AMZ_REGION);
 
   const getProductsUseCase = new GetProductsUseCase(productRepository);
   const getProductByIdUseCase = new GetProductByAsinUseCase(productRepository);

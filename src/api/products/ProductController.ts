@@ -28,8 +28,8 @@ export default class ProductController {
         if (request.query.page) {
             page = +request.query.page;
 
-            if (Number.isNaN(page) || page < 1 || page > 5) {
-                return boom.badRequest("The value you specified for page is invalid. Valid values must be between 1 and 5");
+            if (Number.isNaN(page) || page < 1 || page > 10) {
+                return boom.badRequest("The value you specified for page is invalid. Valid values must be between 1 and 10");
             }
         }
 

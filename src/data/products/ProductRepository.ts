@@ -1,5 +1,5 @@
-import { OperationHelper } from "apac";
 import * as MongoClient from "mongodb";
+import * as ProductAdvertisingAPIv1 from "paapi5-nodejs-sdk";
 
 import ProductRepository from "../../domain/products/boundaries/ProductRepository";
 import Product from "../../domain/products/entities/Product";
@@ -9,16 +9,26 @@ import SearchResult from "../../domain/products/entities/SearchResult";
 const mongoUrl = process.env.DB_CONNECTION;
 
 export default class ProductAmazonRepository implements ProductRepository {
-    public opHelper: OperationHelper;
+    private associateTag: string;
+    private amzApi: any;
 
-    constructor(associateTag: string, accessKey: string, secretAccessKey: string, locale: string) {
+    constructor(
+        associateTag: string,
+        accessKey: string,
+        secretAccessKey: string,
+        host: string,
+        region: string) {
 
-        this.opHelper = new OperationHelper({
-            assocId: associateTag,
-            awsId: accessKey,
-            awsSecret: secretAccessKey,
-            locale
-        });
+        this.associateTag = associateTag;
+
+        const defaultClient = ProductAdvertisingAPIv1.ApiClient.instance;
+
+        defaultClient.accessKey = accessKey;
+        defaultClient.secretKey = secretAccessKey;
+        defaultClient.host = host;
+        defaultClient.region = region;
+
+        this.amzApi = new ProductAdvertisingAPIv1.DefaultApi();
     }
 
     public get(filter: string, page: number = 1, category: string): Promise<SearchResult<Product>> {
@@ -31,104 +41,183 @@ export default class ProductAmazonRepository implements ProductRepository {
         }
 
         return new Promise((resolve, reject) => {
-            this.opHelper.execute("ItemSearch", {
-                ItemPage: page,
-                Keywords: filter,
-                ResponseGroup: "ItemAttributes,Offers,Images",
-                SearchIndex: category
-            }).then((response) => {
-                const results = {
-                    items: [],
-                    page,
-                    totalPages: 1
-                };
+            const searchItemsRequest = new ProductAdvertisingAPIv1.SearchItemsRequest();
 
-                if (response.result.ItemSearchResponse.Items.Item) {
-                    if (Array.isArray(response.result.ItemSearchResponse.Items.Item)) {
-                        const amzTotalPages = response.result.ItemSearchResponse.Items.TotalPages;
+            searchItemsRequest.PartnerTag = this.associateTag;
+            searchItemsRequest.PartnerType = "Associates";
+            searchItemsRequest.Keywords = filter;
+            searchItemsRequest.SearchIndex = category;
+            searchItemsRequest.ItemPage = page;
+            searchItemsRequest.Resources = [
+                "CustomerReviews.Count",
+                "CustomerReviews.StarRating",
+                "Images.Primary.Medium",
+                "Images.Primary.Large",
+                "Images.Variants.Medium",
+                "Images.Variants.Large",
+                "ItemInfo.ExternalIds",
+                "ItemInfo.Features",
+                "ItemInfo.Title",
+                "ItemInfo.TradeInInfo",
+                "Offers.Listings.Price"
+            ];
 
-                        results.items =
-                            response.result.ItemSearchResponse.Items.Item.map((p) => this.mapAmazonProduct(p));
+            const results = {
+                items: [],
+                page,
+                totalPages: 1
+            };
 
-                        results.totalPages = +amzTotalPages > 5 ? 5 : +amzTotalPages;
+            try {
+                this.amzApi.searchItems(searchItemsRequest, (error, data, response) => {
+                    if (error) {
+                        console.log("Printing Full Error Object:\n" + JSON.stringify(error, null, 1));
 
+                        reject({ message: "An error has ocurred processing the request" });
                     } else {
-                        results.items.push(this.mapAmazonProduct(response.result.ItemSearchResponse.Items.Item));
+                        const searchItemsResponse =
+                            ProductAdvertisingAPIv1.SearchItemsResponse.constructFromObject(data);
+
+                        if (searchItemsResponse.SearchResult !== undefined) {
+
+                            const amzTotalPages = searchItemsResponse.SearchResult.TotalResultCount / 10;
+
+                            results.items =
+                                searchItemsResponse.SearchResult.Items.map((p) => this.mapAmazonProduct(p));
+
+                            results.totalPages = amzTotalPages > 10 ? 10 : amzTotalPages;
+
+                            resolve(results);
+                        } else {
+                            reject({ message: "An error has ocurred processing the request" });
+                            console.log("Complete Error Response: " +
+                                JSON.stringify(searchItemsResponse.Errors, null, 1));
+                        }
                     }
-                }
-
-                results.items = results.items.map((p) => {
-                    const prices = this.formatPrices(p.prices);
-
-                    return {...p, prices};
                 });
-
-                resolve(results);
-            }).catch((err) => {
+            } catch (ex) {
                 reject({ message: "An error has ocurred processing the request" });
-            });
+            }
         });
     }
 
     public getByAsin(asin: string): Promise<Product> {
         return new Promise((resolve, reject) => {
-            this.opHelper.execute("ItemLookup", {
-                IdType: "ASIN",
-                ItemId: asin,
-                ResponseGroup: "ItemAttributes,Offers,Images"
-            }).then((response) => {
-                if (response.result.ItemLookupResponse.Items.Item) {
-                    const product = this.mapAmazonProduct(response.result.ItemLookupResponse.Items.Item);
+            const getItemsRequest = new ProductAdvertisingAPIv1.GetItemsRequest();
 
-                    this.getOtherPrices(product.ean)
-                        .then((prices) => {
-                            if (prices) {
-                                product.prices.push(...prices);
+            getItemsRequest.PartnerTag = this.associateTag;
+            getItemsRequest.PartnerType = "Associates";
+            getItemsRequest.ItemIds = [asin];
+            getItemsRequest.Condition = "New";
+            getItemsRequest.Resources = [
+                "CustomerReviews.Count",
+                "CustomerReviews.StarRating",
+                "Images.Primary.Medium",
+                "Images.Primary.Large",
+                "Images.Variants.Medium",
+                "Images.Variants.Large",
+                "ItemInfo.ExternalIds",
+                "ItemInfo.Features",
+                "ItemInfo.Title",
+                "ItemInfo.TradeInInfo",
+                "Offers.Listings.Price"
+            ];
 
-                                product.prices = product.prices.sort((a, b) => {
-                                    return a.price - b.price;
-                                });
-                            }
+            try {
+                this.amzApi.getItems(getItemsRequest, (error, data, response) => {
+                    if (error) {
+                        console.log("Printing Full Error Object:\n" + JSON.stringify(error, null, 1));
 
-                            product.prices = this.formatPrices(product.prices);
+                        reject({ message: "An error has ocurred processing the request" });
+                    } else {
+                        const getItemsResponse =
+                            ProductAdvertisingAPIv1.GetItemsResponse.constructFromObject(data);
 
-                            resolve(product);
-                        }).catch((err) => resolve(product));
-                } else {
-                    reject({ message: `Does not exists any product with asin ${asin}` });
-                }
-            }).catch((err) => {
+                        if (getItemsResponse.ItemsResult !== undefined &&
+                            getItemsResponse.ItemsResult.Items !== undefined &&
+                            getItemsResponse.ItemsResult.Items.length > 0) {
+
+                            const product = this.mapAmazonProduct(getItemsResponse.ItemsResult.Items[0]);
+
+                            this.getOtherPrices(product.ean)
+                                .then((prices) => {
+                                    if (prices) {
+                                        product.prices.push(...prices);
+
+                                        product.prices = product.prices.sort((a, b) => {
+                                            return a.price - b.price;
+                                        });
+                                    }
+
+                                    product.prices = this.formatPrices(product.prices);
+
+                                    resolve(product);
+                                }).catch((err) => resolve(product));
+                        } else {
+                            reject({ message: `Does not exists any product with asin ${asin}` });
+                        }
+                    }
+                });
+            } catch (ex) {
                 reject({ message: "An error has ocurred processing the request" });
-            });
+            }
+
+            // this.opHelper.execute("ItemLookup", {
+            //     IdType: "ASIN",
+            //     ItemId: asin,
+            //     ResponseGroup: "ItemAttributes,Offers,Images"
+            // }).then((response) => {
+            //     if (response.result.ItemLookupResponse.Items.Item) {
+            //         const product = this.mapAmazonProduct(response.result.ItemLookupResponse.Items.Item);
+
+            //         this.getOtherPrices(product.ean)
+            //             .then((prices) => {
+            //                 if (prices) {
+            //                     product.prices.push(...prices);
+
+            //                     product.prices = product.prices.sort((a, b) => {
+            //                         return a.price - b.price;
+            //                     });
+            //                 }
+
+            //                 product.prices = this.formatPrices(product.prices);
+
+            //                 resolve(product);
+            //             }).catch((err) => resolve(product));
+            //     } else {
+            //         reject({ message: `Does not exists any product with asin ${asin}` });
+            //     }
+            // }).catch((err) => {
+            //     reject({ message: "An error has ocurred processing the request" });
+            // });
         });
     }
 
-    private mapAmazonProduct(p: any) {
+    private mapAmazonProduct(amzProduct: any) {
         const product = {
-            asin: p.ASIN,
-            description: this.mapFeature(p),
-            ean: p.ItemAttributes.EAN,
-            images: this.mapImages(p),
-            name: p.ItemAttributes.Title,
-            upc: p.ItemAttributes.UPC,
-            url: p.DetailPageURL,
+            asin: amzProduct?.ASIN,
+            description: this.mapFeature(amzProduct),
+            ean: amzProduct?.ItemInfo?.ExternalIds?.EANs?.DisplayValues[0],
+            images: this.mapImages(amzProduct),
+            name: amzProduct?.ItemInfo?.Title?.DisplayValue,
+            upc: amzProduct?.ItemInfo?.ExternalIds?.UPCs?.DisplayValues[0],
+            url: amzProduct.DetailPageURL,
             prices: []
         };
         let currency = "";
         let amount = 0.0;
 
-        if (p.Offers && p.Offers.Offer && p.Offers.Offer.OfferListing &&
-            p.Offers.Offer.OfferListing.Price) {
-            const noformattedPrice = p.Offers.Offer.OfferListing.Price.Amount;
-            currency = p.Offers.Offer.OfferListing.Price.CurrencyCode;
-            amount = +(noformattedPrice.slice(0, noformattedPrice.length - 2) + "." +
-                noformattedPrice.slice(noformattedPrice.length - 2));
+        if (amzProduct.Offers !== undefined && amzProduct.Offers.Listings !== undefined
+            && amzProduct.Offers.Listings[0].Price !== undefined
+            && amzProduct.Offers.Listings[0].Price.DisplayAmount !== undefined) {
+            currency = amzProduct.Offers.Listings[0].Price.Currency;
+            amount = amzProduct.Offers.Listings[0].Price.Amount;
         }
 
         const price = {
             store: "Amazon",
             storeImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/100px-Amazon_logo.svg.png",
-            url: p.DetailPageURL,
+            url: amzProduct.DetailPageURL,
             price: amount,
             currency
         };
@@ -138,19 +227,25 @@ export default class ProductAmazonRepository implements ProductRepository {
         return product;
     }
 
-    private mapImages(p: any) {
+    private mapImages(amzProduct: any) {
         const images = [];
 
-        if (p.LargeImage) {
-            images.push(p.LargeImage.URL);
+        if (amzProduct.Images && amzProduct.Images.Primary) {
+            if (amzProduct.Images.Primary.Large) {
+                images.push(amzProduct.Images.Primary.Large.URL);
+            } else if (amzProduct.Images.Primary.Medium) {
+                images.push(amzProduct.Images.Primary.Medium.URL);
+            }
         }
 
-        if (p.ImageSets && p.ImageSets.ImageSet && Array.isArray(p.ImageSets.ImageSet)) {
-            p.ImageSets.ImageSet.forEach((imageSet) => {
-                images.push(imageSet.LargeImage.URL);
+        if (amzProduct.Images && amzProduct.Images.Variants) {
+            amzProduct.Images.Variants.forEach((imageSet) => {
+                if (imageSet.Large) {
+                    images.push(imageSet.Large.URL);
+                } else if (imageSet.Medium) {
+                    images.push(imageSet.Medium.URL);
+                }
             });
-        } else if (p.ImageSets && p.ImageSets.ImageSet && p.ImageSets.ImageSet.LargeImage) {
-            images.push(p.ImageSets.ImageSet.LargeImage.URL);
         }
 
         return Array.from(new Set(images));
@@ -159,12 +254,9 @@ export default class ProductAmazonRepository implements ProductRepository {
     private mapFeature(amzProduct: any) {
         let description = "";
 
-        if (amzProduct.ItemAttributes && amzProduct.ItemAttributes.Feature) {
-            if (Array.isArray(amzProduct.ItemAttributes.Feature)) {
-                description = amzProduct.ItemAttributes.Feature.join(" ");
-            } else {
-                description = amzProduct.ItemAttributes.Feature;
-            }
+        if (amzProduct.ItemInfo && amzProduct.ItemInfo.Features &&
+            amzProduct.ItemInfo.Features.DisplayValues) {
+            description = amzProduct.ItemInfo.Features.DisplayValues.join(" ");
         }
 
         return description;
