@@ -218,7 +218,7 @@ export default class ProductAmazonRepository implements ProductRepository {
             store: "Amazon",
             storeImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/100px-Amazon_logo.svg.png",
             url: amzProduct.DetailPageURL,
-            price: amount,
+            price: amount.toString(),
             currency
         };
 
