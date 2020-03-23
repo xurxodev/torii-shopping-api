@@ -87,6 +87,12 @@ export default class ProductAmazonRepository implements ProductRepository {
 
                             results.totalPages = amzTotalPages > 10 ? 10 : amzTotalPages;
 
+                            results.items = results.items.map((p) => {
+                                const prices = this.formatPrices(p.prices);
+
+                                return { ...p, prices };
+                            });
+
                             resolve(results);
                         } else {
                             reject({ message: "An error has ocurred processing the request" });
@@ -161,35 +167,6 @@ export default class ProductAmazonRepository implements ProductRepository {
             } catch (ex) {
                 reject({ message: "An error has ocurred processing the request" });
             }
-
-            // this.opHelper.execute("ItemLookup", {
-            //     IdType: "ASIN",
-            //     ItemId: asin,
-            //     ResponseGroup: "ItemAttributes,Offers,Images"
-            // }).then((response) => {
-            //     if (response.result.ItemLookupResponse.Items.Item) {
-            //         const product = this.mapAmazonProduct(response.result.ItemLookupResponse.Items.Item);
-
-            //         this.getOtherPrices(product.ean)
-            //             .then((prices) => {
-            //                 if (prices) {
-            //                     product.prices.push(...prices);
-
-            //                     product.prices = product.prices.sort((a, b) => {
-            //                         return a.price - b.price;
-            //                     });
-            //                 }
-
-            //                 product.prices = this.formatPrices(product.prices);
-
-            //                 resolve(product);
-            //             }).catch((err) => resolve(product));
-            //     } else {
-            //         reject({ message: `Does not exists any product with asin ${asin}` });
-            //     }
-            // }).catch((err) => {
-            //     reject({ message: "An error has ocurred processing the request" });
-            // });
         });
     }
 
@@ -218,7 +195,7 @@ export default class ProductAmazonRepository implements ProductRepository {
             store: "Amazon",
             storeImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/100px-Amazon_logo.svg.png",
             url: amzProduct.DetailPageURL,
-            price: amount.toString(),
+            price: amount,
             currency
         };
 
