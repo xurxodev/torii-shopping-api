@@ -32,10 +32,6 @@ export default class ProductAmazonRepository implements ProductRepository {
     }
 
     public get(filter: string, page: number = 1, category: string): Promise<SearchResult<Product>> {
-        if (filter.length === 0) {
-            filter = " ";
-        }
-
         if (category.length === 0) {
             category = "All";
         }
@@ -45,7 +41,11 @@ export default class ProductAmazonRepository implements ProductRepository {
 
             searchItemsRequest.PartnerTag = this.associateTag;
             searchItemsRequest.PartnerType = "Associates";
-            searchItemsRequest.Keywords = filter;
+
+            if (filter) {
+                searchItemsRequest.Keywords = filter;
+            }
+
             searchItemsRequest.SearchIndex = category;
             searchItemsRequest.ItemPage = page;
             searchItemsRequest.Resources = [
