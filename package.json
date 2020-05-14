@@ -8,7 +8,7 @@
   "license": "MIT",
   "scripts": {
     "import-prices": "yarn build && yarn lint && node ./build/pricesImporter.js",
-    "start": "yarn build && node ./build/server.js",
+    "start": "node ./build/server.js",
     "build": "yarn clean && yarn tsc",
     "start-dev": "./node_modules/nodemon/bin/nodemon.js -e ts  --exec \"yarn build-dev\"",
     "build-dev": "yarn build && yarn lint && node ./build/server.js",
@@ -40,6 +40,6 @@
     "typescript": "^3.7.4"
   },
   "engines": {
-    "node": "10.x"
+    "node": "14.x"
   }
 }

@@ -80,7 +80,7 @@ export default class ProductAmazonRepository implements ProductRepository {
 
                         if (searchItemsResponse.SearchResult !== undefined) {
 
-                            const amzTotalPages = searchItemsResponse.SearchResult.TotalResultCount / 10;
+                            const amzTotalPages = Math.ceil(searchItemsResponse.SearchResult.TotalResultCount / 10);
 
                             results.items =
                                 searchItemsResponse.SearchResult.Items.map((p) => this.mapAmazonProduct(p));
@@ -94,6 +94,13 @@ export default class ProductAmazonRepository implements ProductRepository {
                             });
 
                             resolve(results);
+                        } else if (searchItemsResponse.Errors && Array.isArray(searchItemsResponse.Errors) &&
+                            searchItemsResponse.Errors[0].Code === "NoResults") {
+                            return resolve({
+                                items: [],
+                                page: 1,
+                                totalPages: 1
+                            });
                         } else {
                             reject({ message: "An error has ocurred processing the request" });
                             console.log("Complete Error Response: " +
