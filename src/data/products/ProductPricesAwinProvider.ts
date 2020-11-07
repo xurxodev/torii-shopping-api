@@ -10,6 +10,7 @@ dotenv.config();
 
 const nikeMerchantName = "Nike ES";
 const acerMerchantName = "Acer ES";
+const pcComponentesMerchantName = "PcComponentes ES";
 
 export default class ProductPricesAwinProvider implements ProductPricesProvider {
     public get(): Promise<ProductPrices[]> {
@@ -59,6 +60,8 @@ export default class ProductPricesAwinProvider implements ProductPricesProvider 
             storeImage = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Acer_2011.svg/100px-Acer_2011.svg.png";
         } else if (awinProduct.merchant_name === nikeMerchantName) {
             storeImage = "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Logo_NIKE.svg/100px-Logo_NIKE.svg.png";
+        } else if (awinProduct.merchant_name === pcComponentesMerchantName) {
+            storeImage = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/PcComponentes.png/100px-PcComponentes.png";
         }
 
         let price: number = 0.0;
@@ -70,7 +73,7 @@ export default class ProductPricesAwinProvider implements ProductPricesProvider 
             priceString = awinProduct.search_price;
         }
 
-        price  = +(+priceString).toFixed(2);
+        price = +(+priceString).toFixed(2);
 
         const ean = this.getEan(awinProduct);
         const upc = this.getUpc(awinProduct);
