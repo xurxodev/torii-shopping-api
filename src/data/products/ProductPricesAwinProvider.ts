@@ -20,7 +20,7 @@ export default class ProductPricesAwinProvider implements ProductPricesProvider 
 
         return new Promise((resolve, reject) => {
 
-            const fileUrl = `https://productdata.awin.com/datafeed/download/apikey/${process.env.AWIN_API_KEY}/language/any/fid/${process.env.AWIN_PROGRAMS}/columns/aw_deep_link,aw_product_id,merchant_product_id,merchant_id,merchant_name,search_price,currency,saving,ean,isbn,upc,mpn,product_GTIN,display_price/format/csv/delimiter/%7C/compression/gzip/`;
+            const fileUrl = `https://productdata.awin.com/datafeed/download/apikey/${process.env.AWIN_API_KEY}/language/any/fid/${process.env.AWIN_PROGRAMS}/columns/aw_deep_link,aw_product_id,merchant_product_id,merchant_id,merchant_name,search_price,currency,saving,ean,isbn,upc,mpn,product_GTIN,display_price,store_price/format/csv/delimiter/%7C/compression/gzip/`;
             console.log(fileUrl);
             const gunzip = zlib.createGunzip();
 
@@ -67,7 +67,9 @@ export default class ProductPricesAwinProvider implements ProductPricesProvider 
         let price: number = 0.0;
         let priceString: string = "";
 
-        if (awinProduct.saving) {
+        if (awinProduct.store_price) {
+            priceString = awinProduct.store_price.replace("EUR", "").trim();
+        } else if (awinProduct.saving) {
             priceString = awinProduct.saving.replace("EUR", "").trim();
         } else {
             priceString = awinProduct.search_price;
