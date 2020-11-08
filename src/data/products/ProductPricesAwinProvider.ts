@@ -122,11 +122,7 @@ export default class ProductPricesAwinProvider implements ProductPricesProvider 
     }
 
     private getGtin(awinProduct: any) {
-        let gtin = awinProduct.product_GTIN;
-
-        if (gtin) {
-            gtin = gtin.substring(1, 14);
-        }
+        const gtin = awinProduct.product_GTIN;
 
         return gtin;
     }
