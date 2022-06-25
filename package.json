@@ -24,7 +24,7 @@
     "hapi": "^18.1.0",
     "hapi-auth-jwt2": "^8.6.2",
     "mongodb": "^3.3.2",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.7",
     "paapi5-nodejs-sdk": "^1.0.1",
     "request": "^2.88.0",
     "zlib": "^1.0.5"
